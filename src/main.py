@@ -70,12 +70,25 @@ def get_user_favorites():
     favorites_list = list(map(lambda  favorites: favorites.serialize(), favorites))
     return jsonify(favorites_list)
 
-@app.route('/favorites/planet/<int:planet_id>', methods=['POST'])
-def add_planet_favorites(planet_id):
-    new_planet_fav = list(filter(planet_id, Planet))
-    db.session.add(new_planet_fav)
-    db.session.commit()
-    return jsonify({'Added favorites'})
+@app.route('/favorites/<string:nature>/<int:nature_id>', methods=['POST']) #user_id name
+def add_planet_favorites(nature=None, nature_id=None):
+    request_body = request.json
+    new_favorite = Favorites(user_id = request_body['user_id'], name = request_body['name'], nature=nature, nature_id=nature_id)
+    db.session.add(new_favorite)
+    try :
+        db.session.commit()
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({'message' : 'error 500'}), 500
+    print(new_favorite.serialize())
+    return jsonify([]),200
+
+
+    # new_planet_fav = list(filter(planet_id, Planet))
+    # db.session.add(new_planet_fav)
+    # db.session.commit()
+    # return jsonify({'Added favorites'})
 
 @app.route('/favorites/people/<int:people_id>', methods=['POST'])
 def add_people_favorites(people_id):

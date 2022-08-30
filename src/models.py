@@ -62,7 +62,7 @@ class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nature = db.Column(db.String(16), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    naturte_id = db.Column(db.Integer, nullable=False)
+    nature_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(16), nullable=False)
     __table_args__=(db.UniqueConstraint(
         'user_id',
