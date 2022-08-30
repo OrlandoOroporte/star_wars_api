@@ -30,26 +30,12 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-# @app.route('/user', methods=['POST'])
-# def add_new_user():
-#     request_body = request.json
-#     User.append(request_body)
-#     return jsonify(User)
+@app.route('/people', methods=['GET'])
+def get_peoples():
+    peoples = People.query.all()
+    peoples_list = list(map(lambda people: people.serialize(), peoples))
+    return jsonify(peoples_list), 200
 
-# @app.route('/user/<int:id>', methods=['GET'])
-# def get_user(id):
-#     user = User.query.get(id)
-#     if user is None:
-#         return jsonify({"User does not exist "})
-#     return jsonify(user.serialize()), 200
-
-# @app.route('/planet/<int:id>', methods=['GET'])
-# def get_planet(id):
-#     planet = Planet.query.get(id)
-#     if planet is None:
-#         return jsonify({"Planet does not exist "})
-#     return jsonify(planet.serialize()), 200
-       
 @app.route('/people/<int:id>', methods=['GET'])
 def get_people(id=None):
     people = People.query.get(id)
@@ -57,29 +43,53 @@ def get_people(id=None):
         return jsonify({"mesage":"Not found"}), 404
     return jsonify(people.serialize()), 200
 
-# @app.route('/user', methods=['GET'])
-# def get_users():
-#     users = User.query.all()
-#     users2 = list(map(lambda user: User.serialize(), users))
-#     return jsonify(users2), 200
 
-# @app.route('/planet', methods=['GET'])
-# def get_planets():
-#     planets = Planet.query.all()
-#     planets2 = list(map(lambda planet: Planet.serialize(), planets))
-#     return jsonify(planets), 200
+@app.route('/planet', methods=['GET'])
+def get_planets():
+    planets = Planet.query.all()
+    planets_list = list(map(lambda planet: planet.serialize(), planets))
+    return jsonify(planets), 200
 
-@app.route('/people', methods=['GET'])
-def get_peoples():
-    peoples = People.query.all()
-    peoples = list(map(lambda people: people.serialize(), peoples))
-    return jsonify(peoples), 200
+@app.route('/planet/<int:id>', methods=['GET'])
+def get_planet(id):
+    planet = Planet.query.get(id)
+    if planet is None:
+        return jsonify({"Planet does not exist "}), 404
+    return jsonify(planet.serialize()), 200
 
-# @app.route('user/favorites', methods=['GET'])
-# def get_user_favorites():
-#     favorites1 = Favorites.query.all()
-#     favorites2 = list(map(lambda  favorites: Favorites.serialize(), favorites1))
-#     return jsonify(favorites1)
+
+@app.route('/user', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    users_list= list(map(lambda user: user.serialize(), users))
+    return jsonify(users_list), 200
+
+@app.route('/user/favorites', methods=['GET'])
+def get_user_favorites():
+    favorites = Favorites.query.all()
+    favorites_list = list(map(lambda  favorites: favorites.serialize(), favorites))
+    return jsonify(favorites_list)
+
+@app.route('/user/favorites/planet/<int:id>', methods=['DELETE'])
+def rem_favorites_planet(id):
+    favorites = Favorites.query.get(id)
+    db.session.delete(favorites)
+    db.session.commit()
+    return 'Delete'
+
+@app.route('/user/favorites/people/<int:id>', methods=['DELETE'])
+def rem_favorites_people(id):
+    favorites = Favorites.query.get(id)
+    db.session.delete(favorites)
+    db.session.commit()
+    return 'Delete'
+
+# @app.route('/user', methods=['POST'])
+# def add_new_user():
+#     request_body = request.json
+#     User.append(request_body)
+#     return jsonify(User)
+
 
 # @app.route('favorite/planet/<int:id>', methods=['POST'])
 # def add_planet_favorites(id):
@@ -90,12 +100,6 @@ def get_peoples():
 # def add_people_favorites(id):
 #     return jsonify()
 
-# @app.route('user/favorites/<int:id>', methods=['DELETE'])
-# def rem_favorites(id):
-#     favorites = Favorites.query.get(id)
-#     db.session.delete(favorites)
-#     db.session.commit()
-#     return 'Delete'
 
 
 # @app.route('/user', methods=['GET'])
