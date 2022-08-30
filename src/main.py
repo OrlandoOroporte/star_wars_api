@@ -50,18 +50,18 @@ def sitemap():
 #         return jsonify({"Planet does not exist "})
 #     return jsonify(planet.serialize()), 200
        
-# @app.route('/people/<int:id>', methods=['GET'])
-# def get_people(id):
-#     people = People.query.get(id)
-#     if people is None:
-#         return jsonify({"People does not exist "})
-#     return jsonify(People.serialize()), 200
+@app.route('/people/<int:id>', methods=['GET'])
+def get_people(id=None):
+    people = People.query.get(id)
+    if people is None:
+        return jsonify({"mesage":"Not found"}), 404
+    return jsonify(people.serialize()), 200
 
 # @app.route('/user', methods=['GET'])
 # def get_users():
 #     users = User.query.all()
 #     users2 = list(map(lambda user: User.serialize(), users))
-#     return jsonify(users), 200
+#     return jsonify(users2), 200
 
 # @app.route('/planet', methods=['GET'])
 # def get_planets():
@@ -69,11 +69,11 @@ def sitemap():
 #     planets2 = list(map(lambda planet: Planet.serialize(), planets))
 #     return jsonify(planets), 200
 
-# @app.route('/people', methods=['GET'])
-# def get_peoples():
-#     peoples = People.query.all()
-#     peoples2 = list(map(lambda people: People.serialize(), peoples))
-#     return jsonify(peoples), 200
+@app.route('/people', methods=['GET'])
+def get_peoples():
+    peoples = People.query.all()
+    peoples = list(map(lambda people: people.serialize(), peoples))
+    return jsonify(peoples), 200
 
 # @app.route('user/favorites', methods=['GET'])
 # def get_user_favorites():
