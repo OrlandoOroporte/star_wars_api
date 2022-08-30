@@ -70,6 +70,21 @@ def get_user_favorites():
     favorites_list = list(map(lambda  favorites: favorites.serialize(), favorites))
     return jsonify(favorites_list)
 
+@app.route('/favorites/planet/<int:planet_id>', methods=['POST'])
+def add_planet_favorites(planet_id):
+    new_planet_fav = list(filter(planet_id, Planet))
+    db.session.add(new_planet_fav)
+    db.session.commit()
+    return jsonify({'Added favorites'})
+
+@app.route('/favorites/people/<int:people_id>', methods=['POST'])
+def add_people_favorites(people_id):
+    new_people_fav = list(filter(people_id, People))
+    db.session.add(new_people_fav)
+    db.session.commit()
+    return jsonify({'Added favorites'})
+
+
 @app.route('/user/favorites/planet/<int:id>', methods=['DELETE'])
 def rem_favorites_planet(id):
     favorites = Favorites.query.get(id)
