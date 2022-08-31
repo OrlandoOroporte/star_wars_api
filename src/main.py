@@ -40,7 +40,7 @@ def get_peoples():
 def get_people(id=None):
     people = People.query.get(id)
     if people is None:
-        return jsonify({"mesage":"Not found"}), 404
+        return jsonify({"message":"Not found"}), 404
     return jsonify(people.serialize()), 200
 
 
@@ -86,38 +86,20 @@ def add_favorites(nature=None, nature_id=None):
     else:
         return jsonify({'message': 'Your require dont found'}), 401 
 
-
-@app.route('/user/favorites/planet/<int:id>', methods=['DELETE'])
-def rem_favorites_planet(id):
-    favorites = Favorites.query.get(id)
-    db.session.delete(favorites)
-    db.session.commit()
-    return 'Delete'
-
-@app.route('/user/favorites/people/<int:id>', methods=['DELETE'])
-def rem_favorites_people(id):
-    favorites = Favorites.query.get(id)
-    db.session.delete(favorites)
-    db.session.commit()
-    return 'Delete'
-
-# @app.route('/user', methods=['POST'])
-# def add_new_user():
-#     request_body = request.json
-#     User.append(request_body)
-#     return jsonify(User)
-
-
-# @app.route('favorite/planet/<int:id>', methods=['POST'])
-# def add_planet_favorites(id):
-
-#     return jsonify()
-
-# @app.route('favorite/people/<int:id>', methods=['POST'])
-# def add_people_favorites(id):
-#     return jsonify()
-
-
+@app.route("/favorites/<int:favorites_id>", methods=['DELETE'])
+def delete_favorite(favorites_id = None):
+        favorites = Favorites.query.get(favorites_id)
+        if favorites is None:
+            return jsonify({"message":"Not found"}), 404
+        else:
+            try:
+                db.session.delete(favorites)
+                db.session.commit()
+                return jsonify([]), 204
+            except Exception as error:
+                print(error.args)
+                db.session.rollback()
+                return jsonify({"message": "Deleted favorite"})  
 
 # @app.route('/user', methods=['GET'])
 # def handle_hello():
