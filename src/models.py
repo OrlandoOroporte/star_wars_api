@@ -77,5 +77,7 @@ class Favorites(db.Model):
     def serialize(self):
         return {
             'id' : self.id,
-           
+            'nature' : self.nature,
+            'narture_id' : self.nature_id,
+            'name' : self.name
         }
