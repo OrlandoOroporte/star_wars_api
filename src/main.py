@@ -71,31 +71,20 @@ def get_user_favorites():
     return jsonify(favorites_list)
 
 @app.route('/favorites/<string:nature>/<int:nature_id>', methods=['POST']) #user_id name
-def add_planet_favorites(nature=None, nature_id=None):
-    request_body = request.json
-    new_favorite = Favorites(user_id = request_body['user_id'], name = request_body['name'], nature=nature, nature_id=nature_id)
-    db.session.add(new_favorite)
-    try :
-        db.session.commit()
-    except Exception as error:
-        print(error.args)
-        db.session.rollback()
+def add_favorites(nature=None, nature_id=None):
+    if nature is not None:
+        request_body = request.json
+        new_favorite = Favorites(user_id = request_body['user_id'], name = request_body['name'], nature=nature, nature_id=nature_id)
+        db.session.add(new_favorite)
+        try :
+            db.session.commit()
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
         return jsonify({'message' : 'error 500'}), 500
-    print(new_favorite.serialize())
-    return jsonify([]),200
-
-
-    # new_planet_fav = list(filter(planet_id, Planet))
-    # db.session.add(new_planet_fav)
-    # db.session.commit()
-    # return jsonify({'Added favorites'})
-
-@app.route('/favorites/people/<int:people_id>', methods=['POST'])
-def add_people_favorites(people_id):
-    new_people_fav = list(filter(people_id, People))
-    db.session.add(new_people_fav)
-    db.session.commit()
-    return jsonify({'Added favorites'})
+        print(new_favorite.serialize())
+    else:
+        return jsonify({'message': 'Your require dont found'}), 401 
 
 
 @app.route('/user/favorites/planet/<int:id>', methods=['DELETE'])
